@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dodge the Creeps — гайд: HP, урон и замедление</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.65;
+    color: #2d3748;
+    background: #f7fafc;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    background: #fff;
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(0,0,0,0.05);
+  }
+  h1 {
+    font-size: 2em;
+    color: #1a202c;
+    border-bottom: 3px solid #4299e1;
+    padding-bottom: 12px;
+    margin-top: 0;
+  }
+  h2 {
+    font-size: 1.5em;
+    color: #2b6cb0;
+    margin-top: 48px;
+    padding: 8px 0 8px 14px;
+    border-left: 5px solid #4299e1;
+    background: #ebf8ff;
+    border-radius: 0 6px 6px 0;
+  }
+  h3 {
+    font-size: 1.15em;
+    color: #2d3748;
+    margin-top: 32px;
+    padding-left: 4px;
+  }
+  p, li { font-size: 1em; }
+  ul, ol { padding-left: 24px; }
+  li { margin-bottom: 6px; }
+  .step {
+    background: #fffaf0;
+    border-left: 4px solid #ed8936;
+    padding: 12px 16px;
+    margin: 20px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .step strong { color: #c05621; }
+  .warn {
+    background: #fff5f5;
+    border-left: 4px solid #e53e3e;
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+    color: #742a2a;
+  }
+  .tip {
+    background: #f0fff4;
+    border-left: 4px solid #38a169;
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+    color: #22543d;
+  }
+  .code-block {
+    position: relative;
+    background: #1a202c;
+    color: #e2e8f0;
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2d3748;
+    padding: 8px 14px;
+    font-size: 0.85em;
+    color: #a0aec0;
+  }
+  .code-header .filename { font-weight: 600; color: #90cdf4; }
+  .copy-btn {
+    background: #4299e1;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .copy-btn:hover { background: #3182ce; }
+  .copy-btn.copied { background: #38a169; }
+  pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.88em;
+    line-height: 1.55;
+  }
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    background: #edf2f7;
+    color: #c53030;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  .code-block code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.95em;
+  }
+  th, td {
+    border: 1px solid #e2e8f0;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  th { background: #ebf8ff; color: #2b6cb0; }
+  tr:nth-child(even) { background: #f7fafc; }
+  .toc {
+    background: #ebf8ff;
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin: 24px 0;
+  }
+  .toc h3 { margin-top: 0; color: #2b6cb0; }
+  .toc ol { margin: 0; }
+  .toc a { color: #2b6cb0; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .key {
+    background: #edf2f7;
+    border: 1px solid #cbd5e0;
+    border-bottom-width: 2px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #2d3748;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Dodge the Creeps — добавляем HP, урон и замедление</h1>
+
+<p>Этот гайд дополняет официальный туториал Godot "Dodge the Creeps". Мы добавим:</p>
+<ul>
+  <li>100 HP у игрока (вместо смерти с одного удара)</li>
+  <li>Урон 10–20 за касание моба</li>
+  <li>Неуязвимость после получения урона</li>
+  <li>Бонус-звёздочку, которая замедляет мобов на 5 секунд</li>
+</ul>
+
+<div class="toc">
+  <h3>Содержание</h3>
+  <ol>
+    <li><a href="#part1">Часть 1. Настраиваем Mob (врага)</a></li>
+    <li><a href="#part2">Часть 2. Настраиваем Player (игрока)</a></li>
+    <li><a href="#part3">Часть 3. Создаём Pickup (звёздочку)</a></li>
+    <li><a href="#part4">Часть 4. Обновляем HUD</a></li>
+    <li><a href="#part5">Часть 5. Обновляем Main</a></li>
+    <li><a href="#part6">Часть 6. Проверка</a></li>
+    <li><a href="#troubleshoot">Если что-то сломалось</a></li>
+  </ol>
+</div>
+
+<div class="tip">
+  <strong>Ориентиры на экране:</strong> <b>слева</b> — панель "Сцена" (дерево объектов), <b>справа</b> — "Инспектор" (настройки), <b>центр</b> — игровой мир, <b>нижний левый угол</b> — "Файловая система".
+</div>
+
+<!-- ===================== ЧАСТЬ 1 ===================== -->
+<h2 id="part1">Часть 1. Настраиваем Mob (врага)</h2>
+
+<div class="step">
+<strong>Шаг 1. Открываем сцену Mob.</strong><br>
+Смотри в <b>нижний левый угол</b> — там список файлов. Найди <code>mob.tscn</code> и <b>дважды щёлкни</b> по нему левой кнопкой мыши.
+</div>
+
+<div class="step">
+<strong>Шаг 2. Добавляем Mob в группу "mobs".</strong><br>
+1. В <b>левом верхнем углу</b> в дереве сцены щёлкни на самый верхний узел — <code>Mob</code>.<br>
+2. Смотри <b>вправо</b> — там панель "Инспектор". В самом верху ряд вкладок: <code>Инспектор</code> | <code>Узел</code> | <code>История</code>.<br>
+3. Нажми вкладку <b><code>Узел</code></b>.<br>
+4. Найди строку <b><code>Группы</code></b> и нажми кнопку <b><code>+</code></b> справа от неё.<br>
+5. Введи <code>mobs</code> и нажми <b>Enter</b>.
+</div>
+
+<div class="step">
+<strong>Шаг 3. Подключаем сигнал body_entered у Mob.</strong><br>
+1. Там же вкладка <b><code>Узел</code></b>.<br>
+2. Раскрой раздел <b><code>Сигналы</code></b>.<br>
+3. Найди в списке <code>body_entered</code> и <b>дважды щёлкни</b> по нему.<br>
+4. В поле "Receiver Method" напиши <code>_on_body_entered</code>.<br>
+5. Нажми кнопку <b><code>Connect</code></b>.
+</div>
+
+<div class="step">
+<strong>Шаг 4. Заменяем скрипт mob.gd.</strong><br>
+1. В дереве сцены щёлкни <b>правой</b> кнопкой по <code>Mob</code> → <b><code>Открыть скрипт</code></b>.<br>
+2. В окне кода: <span class="key">Ctrl+A</span> → <span class="key">Delete</span>.<br>
+3. Вставь код ниже.
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="filename">mob.gd</span>
+    <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+  </div>
+  <pre><code>extends RigidBody2D
+
+@export var min_damage: int = 10
+@export var max_damage: int = 20
+
+var _base_linear_velocity: Vector2
+var _slow_timer: float = 0.0
+
+func _ready():
+	add_to_group("mobs")
+	var mob_types = Array($AnimatedSprite2D.sprite_frames.get_animation_names())
+	$AnimatedSprite2D.animation = mob_types.pick_random()
+	$AnimatedSprite2D.play()
+	_base_linear_velocity = linear_velocity
+
+
+func _physics_process(delta):
+	if _slow_timer > 0.0:
+		_slow_timer -= delta
+		if _slow_timer <= 0.0:
+			linear_velocity = _base_linear_velocity
+
+
+func apply_slow(factor: float, duration: float):
+	_slow_timer = duration
+	if _base_linear_velocity == Vector2.ZERO:
+		_base_linear_velocity = linear_velocity
+	linear_velocity = _base_linear_velocity * factor
+
+
+func _on_body_entered(body):
+	if body.is_in_group("player"):
+		var dmg = randi_range(min_damage, max_damage)
+		body.take_damage(dmg)
+
+
+func _on_VisibilityNotifier2D_screen_exited():
+	queue_free()</code></pre>
+</div>
+
+<p>Нажми <span class="key">Ctrl+S</span>, чтобы сохранить.</p>
+
+<div class="warn">
+<strong>Важно!</strong> Если Godot подчеркнёт <code>_on_VisibilityNotifier2D_screen_exited</code> красным — проверь, что узел <code>VisibilityNotifier2D</code> есть в сцене Mob и его сигнал <code>screen_exited</code> подключён к этой функции.
+</div>
+
+<!-- ===================== ЧАСТЬ 2 ===================== -->
+<h2 id="part2">Часть 2. Настраиваем Player (игрока)</h2>
+
+<div class="step">
+<strong>Шаг 5. Открываем сцену Player.</strong><br>
+В <b>нижнем левом углу</b> найди <code>player.tscn</code> и <b>дважды щёлкни</b> по нему.
+</div>
+
+<div class="step">
+<strong>Шаг 6. Добавляем Player в группу "player".</strong><br>
+1. В дереве сцены (слева вверху) щёлкни на корень <code>Player</code>.<br>
+2. Справа в Инспекторе нажми вкладку <b><code>Узел</code></b>.<br>
+3. Найди строку <b><code>Группы</code></b> → нажми <b><code>+</code></b>.<br>
+4. Введи <code>player</code> и нажми <b>Enter</b>.
+</div>
+
+<div class="step">
+<strong>Шаг 7. Проверяем сигнал body_entered у Player.</strong><br>
+В Инспекторе → вкладка <b><code>Узел</code></b> → раздел <b><code>Сигналы</code></b>. Если у <code>body_entered</code> стоит зелёная галочка — ничего не делай. Если не подключён — подключи к <code>_on_body_entered</code> как в шаге 3.
+</div>
+
+<div class="step">
+<strong>Шаг 8. Заменяем скрипт player.gd.</strong><br>
+Правой кнопкой по <code>Player</code> → <b><code>Открыть скрипт</code></b> → <span class="key">Ctrl+A</span> → <span class="key">Delete</span> → вставь код.
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="filename">player.gd</span>
+    <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+  </div>
+  <pre><code>extends Area2D
+
+signal hit
+signal health_changed(new_health)
+
+@export var speed = 400
+@export var max_health: int = 100
+@export var invulnerability_time: float = 1.5
+
+var screen_size
+var health: int
+var _invulnerable := false
+
+func _ready():
+	screen_size = get_viewport_rect().size
+	health = max_health
+	add_to_group("player")
+	hide()
+
+
+func _process(delta):
+	var velocity = Vector2.ZERO
+	if Input.is_action_pressed(&"move_right"):
+		velocity.x += 1
+	if Input.is_action_pressed(&"move_left"):
+		velocity.x -= 1
+	if Input.is_action_pressed(&"move_down"):
+		velocity.y += 1
+	if Input.is_action_pressed(&"move_up"):
+		velocity.y -= 1
+
+	if velocity.length() > 0:
+		velocity = velocity.normalized() * speed
+		$AnimatedSprite2D.play()
+	else:
+		$AnimatedSprite2D.stop()
+
+	position += velocity * delta
+	position = position.clamp(Vector2.ZERO, screen_size)
+
+	if velocity.x != 0:
+		$AnimatedSprite2D.animation = &"right"
+		$AnimatedSprite2D.flip_v = false
+		$Trail.rotation = 0
+		$AnimatedSprite2D.flip_h = velocity.x < 0
+	elif velocity.y != 0:
+		$AnimatedSprite2D.animation = &"up"
+		rotation = PI if velocity.y > 0 else 0
+
+
+func start(pos):
+	position = pos
+	rotation = 0
+	health = max_health
+	health_changed.emit(health)
+	_invulnerable = false
+	modulate.a = 1.0
+	show()
+	$CollisionShape2D.disabled = false
+
+
+func take_damage(amount: int):
+	if _invulnerable:
+		return
+	health -= amount
+	health_changed.emit(health)
+	if health <= 0:
+		_die()
+	else:
+		_start_invulnerability()
+
+
+func _start_invulnerability():
+	_invulnerable = true
+	var tween = create_tween()
+	tween.set_loops(6)
+	tween.tween_property(self, "modulate:a", 0.3, 0.1)
+	tween.tween_property(self, "modulate:a", 1.0, 0.1)
+	await get_tree().create_timer(invulnerability_time).timeout
+	_invulnerable = false
+	modulate.a = 1.0
+
+
+func _die():
+	hide()
+	hit.emit()
+	$CollisionShape2D.set_deferred(&"disabled", true)
+
+
+func _on_body_entered(_body):
+	pass</code></pre>
+</div>
+
+<p>Нажми <span class="key">Ctrl+S</span>.</p>
+
+<div class="tip">
+<strong>Почему <code>_on_body_entered</code> пустая?</strong> В официальном туториале сигнал <code>body_entered</code> уже подключён к этой функции. Если её удалить — Godot будет ругаться. Мы оставили её пустой, а всю работу делает Mob.
+</div>
+
+<!-- ===================== ЧАСТЬ 3 ===================== -->
+<h2 id="part3">Часть 3. Создаём Pickup (звёздочку)</h2>
+
+<div class="step">
+<strong>Шаг 9. Создаём новую сцену.</strong><br>
+В <b>правом верхнем углу</b> меню: <code>Сцена</code> | <code>Проект</code> | <code>Отладка</code> | ... Нажми <b><code>Сцена</code></b> → <b><code>Новая сцена</code></b>.
+</div>
+
+<div class="step">
+<strong>Шаг 10. Меняем корневой узел на Area2D.</strong><br>
+1. В левом верхнем углу в дереве сейчас стоит какой-то узел.<br>
+2. В правом верхнем углу панели "Инспектор" есть кнопка <b><code>Другой узел</code></b> (или иконка лупы).<br>
+3. Нажми её → в поиске напиши <code>Area2D</code> → выбери → <b><code>Заменить</code></b>.
+</div>
+
+<div class="step">
+<strong>Шаг 11. Переименовываем узел.</strong><br>
+Правой кнопкой по <code>Area2D</code> → <b><code>Переименовать</code></b> → напиши <code>Pickup</code> → Enter.
+</div>
+
+<div class="step">
+<strong>Шаг 12. Добавляем картинку.</strong><br>
+1. В левом верхнем углу над деревом есть кнопка <b><code>+</code></b> ("Добавить узел").<br>
+2. В поиске напиши <code>Sprite2D</code> → выбери → <b><code>Создать</code></b>.
+</div>
+
+<div class="step">
+<strong>Шаг 13. Ставим картинку.</strong><br>
+В Инспекторе найди <b><code>Texture</code></b> → нажми на пустое поле <code>&lt;Пусто&gt;</code> → выбери любую картинку (например <code>icon.svg</code>). При желании поменяй <b><code>Scale</code></b> на <code>2</code> и <code>2</code>.
+</div>
+
+<div class="step">
+<strong>Шаг 14. Добавляем форму столкновения.</strong><br>
+1. Снова нажми <b><code>+</code></b> → напиши <code>CollisionShape2D</code> → <b><code>Создать</code></b>.<br>
+2. В Инспекторе найди <b><code>Shape</code></b> → нажми на пустое поле → <b><code>New CircleShape2D</code></b>.<br>
+3. Раскрой его и поставь <b><code>Radius</code></b> = <code>30</code>.
+</div>
+
+<div class="step">
+<strong>Шаг 15. Сохраняем сцену.</strong><br>
+<span class="key">Ctrl+S</span> → в окошке имя файла: <code>pickup.tscn</code> → <b><code>Сохранить</code></b>.
+</div>
+
+<div class="step">
+<strong>Шаг 16. Вешаем скрипт.</strong><br>
+Правой кнопкой по <code>Pickup</code> → <b><code>Присоединить скрипт</code></b> → <b><code>Создать</code></b> → <span class="key">Ctrl+A</span> → <span class="key">Delete</span> → вставь код.
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="filename">pickup.gd</span>
+    <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+  </div>
+  <pre><code>extends Area2D
+
+@export var slow_duration: float = 5.0
+@export var slow_factor: float = 0.4
+
+var _used := false
+
+func _ready():
+	body_entered.connect(_on_body_entered)
+
+
+func _on_body_entered(body):
+	if _used:
+		return
+	if not body.is_in_group("player"):
+		return
+	_used = true
+	get_tree().call_group("mobs", "apply_slow", slow_factor, slow_duration)
+	queue_free()</code></pre>
+</div>
+
+<p>Нажми <span class="key">Ctrl+S</span>.</p>
+
+<!-- ===================== ЧАСТЬ 4 ===================== -->
+<h2 id="part4">Часть 4. Обновляем HUD</h2>
+
+<div class="step">
+<strong>Шаг 17. Открываем HUD.</strong><br>
+В нижнем левом углу найди <code>hud.tscn</code> → дважды щёлкни.
+</div>
+
+<div class="step">
+<strong>Шаг 18. Добавляем надпись HP.</strong><br>
+1. В дереве найди <code>ScoreLabel</code> → правой кнопкой → <b><code>Дублировать</code></b>.<br>
+2. Переименуй копию в <code>HealthLabel</code>.<br>
+3. В Инспекторе в поле <b><code>Text</code></b> напиши <code>HP: 100</code>.<br>
+4. Найди <b><code>Position</code></b> → <b><code>Y</code></b> → поставь <code>40</code>.
+</div>
+
+<div class="step">
+<strong>Шаг 19. Заменяем hud.gd.</strong><br>
+Правой кнопкой по корню <code>HUD</code> → <b><code>Открыть скрипт</code></b> → <span class="key">Ctrl+A</span> → <span class="key">Delete</span> → вставь код.
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="filename">hud.gd</span>
+    <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+  </div>
+  <pre><code>extends CanvasLayer
+
+signal start_game
+
+func show_message(text):
+	$MessageLabel.text = text
+	$MessageLabel.show()
+	$MessageTimer.start()
+
+
+func show_game_over():
+	show_message("Game Over")
+	await $MessageTimer.timeout
+	$MessageLabel.text = "Dodge the\nCreeps"
+	$MessageLabel.show()
+	await get_tree().create_timer(1).timeout
+	$StartButton.show()
+
+
+func update_score(score):
+	$ScoreLabel.text = str(score)
+
+
+func update_health(hp):
+	$HealthLabel.text = "HP: " + str(hp)
+
+
+func _on_StartButton_pressed():
+	$StartButton.hide()
+	start_game.emit()
+
+
+func _on_MessageTimer_timeout():
+	$MessageLabel.hide()</code></pre>
+</div>
+
+<p>Нажми <span class="key">Ctrl+S</span>.</p>
+
+<!-- ===================== ЧАСТЬ 5 ===================== -->
+<h2 id="part5">Часть 5. Обновляем Main</h2>
+
+<div class="step">
+<strong>Шаг 20. Открываем Main.</strong><br>
+В нижнем левом углу найди <code>main.tscn</code> → дважды щёлкни.
+</div>
+
+<div class="step">
+<strong>Шаг 21. Заменяем main.gd.</strong><br>
+Правой кнопкой по <code>Main</code> → <b><code>Открыть скрипт</code></b> → <span class="key">Ctrl+A</span> → <span class="key">Delete</span> → вставь код.
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="filename">main.gd</span>
+    <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+  </div>
+  <pre><code>extends Node
+
+@export var mob_scene: PackedScene
+@export var pickup_scene: PackedScene
+@export var pickup_spawn_interval: float = 7.0
+
+var score
+
+
+func game_over():
+	$ScoreTimer.stop()
+	$MobTimer.stop()
+	$HUD.show_game_over()
+	$Music.stop()
+	$DeathSound.play()
+
+
+func new_game():
+	get_tree().call_group(&"mobs", &"queue_free")
+	score = 0
+	$Player.start($StartPosition.position)
+	$Player.health_changed.connect($HUD.update_health)
+	$HUD.update_health($Player.max_health)
+	$StartTimer.start()
+	$HUD.update_score(score)
+	$HUD.show_message("Get Ready")
+	$Music.play()
+
+
+func _ready():
+	var t = Timer.new()
+	t.wait_time = pickup_spawn_interval
+	t.autostart = true
+	t.timeout.connect(_spawn_pickup)
+	add_child(t)
+
+
+func _spawn_pickup():
+	if not pickup_scene:
+		return
+	var pickup = pickup_scene.instantiate()
+	var screen = get_viewport_rect().size
+	pickup.position = Vector2(
+		randf_range(80, screen.x - 80),
+		randf_range(80, screen.y - 80)
+	)
+	add_child(pickup)
+
+
+func _on_MobTimer_timeout():
+	var mob = mob_scene.instantiate()
+	var mob_spawn_location = get_node(^"MobPath/MobSpawnLocation")
+	mob_spawn_location.progress_ratio = randf()
+	mob.position = mob_spawn_location.position
+	var direction = mob_spawn_location.rotation + PI / 2
+	direction += randf_range(-PI / 4, PI / 4)
+	mob.rotation = direction
+	var velocity = Vector2(randf_range(150.0, 250.0), 0.0)
+	mob.linear_velocity = velocity.rotated(direction)
+	add_child(mob)
+
+
+func _on_ScoreTimer_timeout():
+	score += 1
+	$HUD.update_score(score)
+
+
+func _on_StartTimer_timeout():
+	$MobTimer.start()
+	$ScoreTimer.start()</code></pre>
+</div>
+
+<p>Нажми <span class="key">Ctrl+S</span>.</p>
+
+<div class="step">
+<strong>Шаг 22. Привязываем pickup.tscn к Main.</strong><br>
+1. В дереве сцены щёлкни на корень <code>Main</code>.<br>
+2. В Инспекторе найди строчку <b><code>Pickup Scene</code></b>.<br>
+3. В нижнем левом углу найди файл <code>pickup.tscn</code>.<br>
+4. <b>Перетащи</b> его мышкой на строку <code>Pickup Scene</code>.
+</div>
+
+<!-- ===================== ЧАСТЬ 6 ===================== -->
+<h2 id="part6">Часть 6. Проверка</h2>
+
+<ol>
+  <li>Нажми <span class="key">F5</span> (или кнопку ▶ в правом верхнем углу).</li>
+  <li>Нажми <b>Start</b> в игре.</li>
+  <li>Управление: стрелки на клавиатуре.</li>
+  <li>Через 7 секунд появится звёздочка. Подбери её — мобы замедлятся.</li>
+  <li>Дай мобу тебя ударить — HP упадёт на 10–20, и ты помигаешь.</li>
+  <li>Когда HP = 0 — игра закончится.</li>
+</ol>
+
+<!-- ===================== TROUBLESHOOT ===================== -->
+<h2 id="troubleshoot">Если что-то сломалось</h2>
+
+<table>
+  <tr><th>Что случилось</th><th>Что делать</th></tr>
+  <tr><td>Ошибка про <code>pickup_scene</code></td><td>Шаг 22 — перетащи <code>pickup.tscn</code> в поле</td></tr>
+  <tr><td>Ошибка про <code>apply_slow</code></td><td>Проверь, что Mob в группе <code>mobs</code> (шаг 2)</td></tr>
+  <tr><td>Ошибка про <code>take_damage</code></td><td>Проверь, что Player в группе <code>player</code> (шаг 6)</td></tr>
+  <tr><td>HP не показывается</td><td>Проверь шаг 18 — есть ли <code>HealthLabel</code> в hud.tscn</td></tr>
+  <tr><td>Мобы не замедляются</td><td>Проверь шаг 3 — подключён ли сигнал <code>body_entered</code> у Mob</td></tr>
+</table>
+
+<p style="text-align:center; margin-top:60px; color:#718096;">Удачи! 🎉</p>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre code');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1500);
+  }).catch(err => {
+    // fallback для http без https
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Копировать';
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+</script>
+
+</body>
+</html>
